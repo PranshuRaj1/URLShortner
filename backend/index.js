@@ -1,8 +1,10 @@
 import express from "express";
+import path from "path";
 import urlRoute from "./routes/url.js";
 import dbConnect from "./db/connect.js";
 import URL from "./models/url.js";
 import dotenv from "dotenv";
+import staticRouter from "./routes/staticRouter.js";
 
 dotenv.config();
 const app = express();
@@ -11,9 +13,19 @@ dbConnect(process.env.MONGODB_URI).then(() => {
   console.log("db connected");
 });
 
-app.use(express.json());
-app.use("/url", urlRoute);
+app.set("view engine", "ejs");
+app.set("views", path.resolve("./views"));
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+app.get("/test", async (req, res) => {
+  const allUrls = await URL.find({});
+  return res.render("home", { urls: allUrls });
+});
+
+app.use("/url", urlRoute);
+app.use("/", staticRouter);
 app.get("/:shortID", async (req, res) => {
   const shortID = req.params.shortID;
   try {
@@ -22,7 +34,7 @@ app.get("/:shortID", async (req, res) => {
       {
         $push: {
           History: {
-            visitedHistory: Date.now(),
+            timestamp: Date.now(),
           },
         },
       },
@@ -41,5 +53,5 @@ app.get("/:shortID", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log("Server Started!!");
+  console.log(`Server Started!! at ${PORT}`);
 });

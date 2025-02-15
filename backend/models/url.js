@@ -1,17 +1,24 @@
 import mongoose from "mongoose";
 
+const historySchema = new mongoose.Schema({
+  timeStamp: {
+    type: Number,
+    default: Date.now,
+  },
+});
+
 const urlSchema = new mongoose.Schema(
   {
     shortID: {
       type: String,
-      require: true,
+      required: true,
       unique: true,
     },
     redirectURL: {
       type: String,
-      require: true,
+      required: true,
     },
-    History: [{ timeStamp: { type: Number } }],
+    History: [historySchema],
   },
   { timestamps: true }
 );

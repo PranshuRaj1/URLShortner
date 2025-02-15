@@ -11,7 +11,20 @@ export default async function shortUrl(req, res) {
     redirectURL: body.url,
     visitedHistory: [],
   });
-  console.log("created");
+  // console.log("created");
 
-  return res.json({ id: id });
+  return res.render("home", { id: id });
+}
+
+export async function handleGetAnalytics(req, res) {
+  const shortID = req.params.id;
+
+  console.log(shortID);
+
+  const result = await URL.findOne({ shortID });
+
+  return res.json({
+    totalClicks: result.History.length,
+    analytics: result.History,
+  });
 }

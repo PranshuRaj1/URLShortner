@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
 import URL from "../models/url.js";
+
 export default async function shortUrl(req, res) {
   const body = req.body;
   const id = nanoid(8);

@@ -5,6 +5,7 @@ import dbConnect from "./db/connect.js";
 import URL from "./models/url.js";
 import dotenv from "dotenv";
 import staticRouter from "./routes/staticRouter.js";
+import { router } from "./routes/user.js";
 
 dotenv.config();
 const app = express();
@@ -25,6 +26,7 @@ app.get("/test", async (req, res) => {
 });
 
 app.use("/url", urlRoute);
+app.use("/user", router);
 app.use("/", staticRouter);
 app.get("/:shortID", async (req, res) => {
   const shortID = req.params.shortID;

@@ -11,6 +11,7 @@ export default async function shortUrl(req, res) {
     shortID: id,
     redirectURL: body.url,
     visitedHistory: [],
+    createdBy: req.user._id,
   });
   // console.log("created");
 

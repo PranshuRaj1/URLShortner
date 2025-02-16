@@ -6,6 +6,8 @@ import URL from "./models/url.js";
 import dotenv from "dotenv";
 import staticRouter from "./routes/staticRouter.js";
 import { router } from "./routes/user.js";
+import cookieParser from "cookie-parser";
+import { restrictToLoggedInUser, checkAuth } from "./middleware/auth.js";
 
 dotenv.config();
 const app = express();
@@ -19,15 +21,16 @@ app.set("views", path.resolve("./views"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 app.get("/test", async (req, res) => {
   const allUrls = await URL.find({});
   return res.render("home", { urls: allUrls });
 });
 
-app.use("/url", urlRoute);
+app.use("/url", restrictToLoggedInUser, urlRoute);
 app.use("/user", router);
-app.use("/", staticRouter);
+app.use("/", checkAuth, staticRouter);
 app.get("/:shortID", async (req, res) => {
   const shortID = req.params.shortID;
   try {

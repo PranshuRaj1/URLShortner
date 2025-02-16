@@ -1,5 +1,4 @@
 import { User } from "../models/user.js";
-import { v4 as uuidv4 } from "uuid";
 import { setUser } from "../service/auth.js";
 
 async function handleUserSignup(req, res) {
@@ -28,10 +27,9 @@ async function handleUserLogin(req, res) {
     });
   }
 
-  const sessionToken = uuidv4();
-  setUser(sessionToken, user);
+  const token = setUser(user);
 
-  res.cookie("uid", sessionToken);
+  res.cookie("uid", token);
 
   return res.redirect("/");
 }
